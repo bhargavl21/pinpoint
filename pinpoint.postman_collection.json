@@ -1,0 +1,410 @@
+{
+	"info": {
+		"_postman_id": "8cb85ea2-714c-42ff-9ffe-af19c3be7a4f",
+		"name": "pinpoint",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39930304"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Token is present in the response\", function () {",
+							"    pm.expect(pm.response.json().token).to.not.be.undefined;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"{{username}}\",\n    \"password\":\"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pinpoint.idearise.co/api/login/",
+					"protocol": "https",
+					"host": [
+						"pinpoint",
+						"idearise",
+						"co"
+					],
+					"path": [
+						"api",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a random integer within a range",
+							"function getRandomInt(min, max) {",
+							"    return Math.floor(Math.random() * (max - min + 1)) + min;",
+							"}",
+							"",
+							"// Function to generate a random name",
+							"function getRandomName() {",
+							"    const names = [\"Manoj\", \"Ravi\", \"Priya\", \"Anjali\", \"Rahul\", \"Sneha\", \"Amit\", \"Deepa\", \"Karan\", \"Nisha\"];",
+							"    return names[getRandomInt(0, names.length - 1)];",
+							"}",
+							"",
+							"// Function to generate a random email based on a name",
+							"function getRandomEmail(name) {",
+							"    return `${name.toLowerCase()}${getRandomInt(100, 999)}@gmail.com`;",
+							"}",
+							"",
+							"// Generate dummy data",
+							"const randomName = getRandomName();",
+							"const dummyData = {",
+							"    name: randomName,",
+							"    email: getRandomEmail(randomName),",
+							"    employeeId: getRandomInt(100, 999).toString(),",
+							"    type: getRandomInt(1, 5).toString(),",
+							"    department: \"test\",",
+							"    designation: \"test\",",
+							"    mode: getRandomInt(1, 3).toString()",
+							"};",
+							"",
+							"// Set the generated data as a variable",
+							"pm.variables.set(\"dummyData\", JSON.stringify(dummyData));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Fixed syntax ",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response body has 'success' field\", function () {",
+							"    pm.response.to.have.jsonBody('success');",
+							"});",
+							"",
+							"pm.test(\"Response body has 'msg' field with value 'User created Successfully'\", function () {",
+							"    pm.expect(pm.response.text()).to.include('User created Successfully');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af484863be906fb937237d5016bd67047b615ca5",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{dummyData}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pinpoint.idearise.co/api/add-user/",
+					"protocol": "https",
+					"host": [
+						"pinpoint",
+						"idearise",
+						"co"
+					],
+					"path": [
+						"api",
+						"add-user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_users-list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has key 'users_list' and set user ID in collection variable\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.have.property('users_list');",
+							"    ",
+							"    // Capture the id from the first user in the users_list",
+							"    const userId = responseData.users_list[0].id;",
+							"    pm.collectionVariables.set(\"userId\", userId);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af484863be906fb937237d5016bd67047b615ca5",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://pinpoint.idearise.co/api/users-list/",
+					"protocol": "https",
+					"host": [
+						"pinpoint",
+						"idearise",
+						"co"
+					],
+					"path": [
+						"api",
+						"users-list",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit-user/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response body has 'success' property\", function () {",
+							"    pm.expect(pm.response.json()).to.have.property('success');",
+							"});",
+							"",
+							"pm.test(\"Response body has 'msg' property\", function () {",
+							"    pm.expect(pm.response.json()).to.have.property('msg');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af484863be906fb937237d5016bd67047b615ca5",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "phone",
+							"value": " null",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": " 216",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": " mani k",
+							"type": "text"
+						},
+						{
+							"key": "department",
+							"value": " testing",
+							"type": "text"
+						},
+						{
+							"key": "designation",
+							"value": " test",
+							"type": "text"
+						},
+						{
+							"key": "employeeId",
+							"value": " 161",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://pinpoint.idearise.co/api/edit-user/{{userId}}/",
+					"protocol": "https",
+					"host": [
+						"pinpoint",
+						"idearise",
+						"co"
+					],
+					"path": [
+						"api",
+						"edit-user",
+						"{{userId}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response body has 'success' as true\", function () {",
+							"    pm.expect(pm.response.json().success).to.eql(true);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token af484863be906fb937237d5016bd67047b615ca5",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{userId}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://pinpoint.idearise.co/api/delete-user/",
+					"protocol": "https",
+					"host": [
+						"pinpoint",
+						"idearise",
+						"co"
+					],
+					"path": [
+						"api",
+						"delete-user",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "username",
+			"value": "bhargav111887@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "bhargav123",
+			"type": "string"
+		}
+	]
+}
