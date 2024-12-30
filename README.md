@@ -58,7 +58,7 @@
 
 4. **Run the Test**:
    - **Option 1**: Using the IDE:
-     - Using **TestNG** as a test framework, right-click on the test file (e.g., `FitPeoTest.java`) and select **Run**.
+     - Using **TestNG** as a test framework, right-click on the test file (e.g., `PinPointLoginAutomation.java`) and select **Run**.
 
 5. **Execution Feedback**:
    - Once the test runs, the **Chrome browser** will open automatically, and you will see the actions being performed (e.g., opening URLs, interacting with elements).
