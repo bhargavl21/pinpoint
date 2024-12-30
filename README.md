@@ -36,15 +36,6 @@
              <artifactId>selenium-java</artifactId>
              <version>4.26.0</version>
          </dependency>
-
-         <!-- TestNG dependency -->
-         <dependency>
-             <groupId>org.testng</groupId>
-             <artifactId>testng</artifactId>
-             <version>7.7.1</version>
-             <scope>test</scope>
-         </dependency>
-     </dependencies>
      ```
 
 ### Steps to Run the Code:
